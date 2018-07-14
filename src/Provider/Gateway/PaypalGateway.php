@@ -7,13 +7,18 @@
 namespace Duopay\Provider\Gateway;
 
 use PayPal\Api\Payer;
+use GuzzleHttp\Client;
+use Kit\Http\Request\RequestManager;
 use Duopay\Contract\DuopayProviderContract;
 use Duopay\Provider\Gateway\Uses\Paypal\EndPoint;
+use Duopay\Provider\Gateway\Uses\Paypal\Requests;
 use Duopay\Contract\DuopayProviderGatewayContract;
 use Duopay\Provider\Gateway\Contract\DuopayGatewayMethodsContract;
 
 class PaypalGateway implements DuopayProviderGatewayContract
 {
+
+	use Requests;
 	
 	/**
 	* @var 		$amount
@@ -112,10 +117,23 @@ class PaypalGateway implements DuopayProviderGatewayContract
 	public function getEndpoint(String $with = '')
 	{
 		if ($this->provider->getOption('test_mode') == true) {
-			return EndPoint::SANDBOX_URL;
+			return EndPoint::SANDBOX_URL . $with;
 		}
 
-		return EndPoint::LIVE_URL;
+		return EndPoint::LIVE_URL . $with;
+	}
+
+	/**
+	* Resolves request end point and returns a client object.
+	*
+	* @param 	$with String
+	* @access 	public
+	* @return 	Object
+	*/
+	public function makeRequestEndPointWithClient(String $with = '')
+	{
+		$endpoint = str_replace('{url}', '', $this->getEndpoint($with));
+		return new RequestManager($endpoint);
 	}
 
 }

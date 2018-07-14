@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ad1891ae39db90462ca682d3b5c337d7",
+    "content-hash": "bc735096ca919662fee26c7fe167ec51",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -235,6 +235,38 @@
                 "sdk"
             ],
             "time": "2017-11-13T19:21:59+00:00"
+        },
+        {
+            "name": "phoxphp/http",
+            "version": "v1.5.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PhoxPHP/Http.git",
+                "reference": "69a7fe10014b5f1a0c91d92575831787dca23187"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PhoxPHP/Http/zipball/69a7fe10014b5f1a0c91d92575831787dca23187",
+                "reference": "69a7fe10014b5f1a0c91d92575831787dca23187",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0.6"
+            },
+            "type": "project",
+            "autoload": {
+                "psr-4": {
+                    "Kit\\Http\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "PhoxPHP Http Component",
+            "keywords": [
+                "PHP7",
+                "http",
+                "php"
+            ],
+            "time": "2018-07-14T22:08:17+00:00"
         },
         {
             "name": "psr/http-message",

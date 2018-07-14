@@ -43,6 +43,11 @@ class Paypal implements DuopayProviderContract
 		);
 
 		$this->context = new ApiContext($tokenCredential);
+		$this->context->setConfig([
+			'log' => $settings['log_file'],
+			'mode' => ($settings['test_mode'] == true) ? 'sandbox' : 'live'
+		]);
+
 		return new PaypalGateway($this);
 	}
 
