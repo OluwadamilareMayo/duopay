@@ -15,6 +15,7 @@
 	},
 	"require": {
 		"stripe/stripe-php": "~6.10.2",
-		"paypal/rest-api-sdk-php": "~1.13.0"
+		"paypal/rest-api-sdk-php": "~1.13.0",
+		"guzzlehttp/guzzle": "~6.0"
 	}
 }
