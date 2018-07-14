@@ -12,5 +12,7 @@ abstract class EndPoint
 	const SANDBOX_URL 		= 'https://api.sandbox.paypal.com/';
 	const LIVE_URL 			= 'https://api.paypal.com/';
 	const GET_TOKEN 		= '{url}v1/oauth2/token';
+	const GET_ACTIVITIES 	= '{url}v1/activities/activities/';
+	const GET_IDENTITY 		= '{url}v1/oauth2/token/userinfo?schema=openid';
 
 }

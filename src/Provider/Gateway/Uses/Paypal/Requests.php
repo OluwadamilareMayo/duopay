@@ -15,9 +15,9 @@ trait Requests
 	/**
 	* Makes a request to get access token.
 	*
-	* @link 	https://developer.paypal.com/docs/api/overview/#make-your-first-call
 	* @access 	public
-	* @return 	Mixed
+	* @return 	String
+	* @link 	https://developer.paypal.com/docs/api/overview/#make-your-first-call
 	*/
 	public function getAccessToken()
 	{
@@ -32,6 +32,40 @@ trait Requests
 
 		$request->setUrlParameters('grant_type', 'client_credentials');
 		$response = $request->post();
+
+		return $response->body();
+	}
+
+	/**
+	* Makes a request that returns a list of activities.
+	*
+	* @param 	$accessToken String
+	* @access 	public
+	* @return 	Mixed
+	* @link 	https://developer.paypal.com/docs/api/activities/v1/#activities
+	*/
+	public function getActivities(String $accessToken)
+	{
+		$request = $this->makeRequestEndPointWithClient(EndPoint::GET_ACTIVITIES);
+		$request->setHeader('Authorization', 'Bearer ' . $accessToken);
+
+		$response = $request->get();
+		return $response->body();
+	}
+
+	/**
+	* Makes a request that returns the user information.
+	*
+	* @param 	$accessToken String
+	* @access 	public
+	* @return 	Mixed
+	* @link 	https://developer.paypal.com/docs/api/identity/v1/#openidconnect_userinfo
+	*/
+	public function getIdentity(String $accessToken)
+	{
+		$request = $this->makeRequestEndPointWithClient(EndPoint::GET_IDENTITY);
+		$request->setHeader('Authorization', 'Bearer ' . $accessToken);
+		$response = $request->get();
 
 		return $response->body();
 	}

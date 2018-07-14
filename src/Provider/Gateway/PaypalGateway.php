@@ -133,7 +133,10 @@ class PaypalGateway implements DuopayProviderGatewayContract
 	public function makeRequestEndPointWithClient(String $with = '')
 	{
 		$endpoint = str_replace('{url}', '', $this->getEndpoint($with));
-		return new RequestManager($endpoint);
+		$request = new RequestManager($endpoint);
+		$request->setHeader('Content-Type', 'application/json');
+
+		return $request;
 	}
 
 }
