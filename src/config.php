@@ -7,7 +7,8 @@ return [
 			'client_id' => null,
 			'client_secret' => null
 		],
-		'log_file' => '/logs/paypal.log'
+		'log_file' => '/logs/paypal.log',
+		'test_mode' => true
 	],
 
 	'stripe' => [

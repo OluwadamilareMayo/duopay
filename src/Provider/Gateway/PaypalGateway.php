@@ -8,6 +8,7 @@ namespace Duopay\Provider\Gateway;
 
 use PayPal\Api\Payer;
 use Duopay\Contract\DuopayProviderContract;
+use Duopay\Provider\Gateway\Uses\Paypal\EndPoint;
 use Duopay\Contract\DuopayProviderGatewayContract;
 use Duopay\Provider\Gateway\Contract\DuopayGatewayMethodsContract;
 
@@ -98,6 +99,23 @@ class PaypalGateway implements DuopayProviderGatewayContract
 	public function setcancelUrl(String $cancelUrl)
 	{
 		$this->cancelUrl = $cancelUrl;
+	}
+
+	/**
+	* Returns sandbox url endpoint if test_mode is true and returns live
+	* url endpoint if test_mode is false.
+	*
+	* @param 	$with String
+	* @access 	public
+	* @return 	String
+	*/
+	public function getEndpoint(String $with = '')
+	{
+		if ($this->provider->getOption('test_mode') == true) {
+			return EndPoint::SANDBOX_URL;
+		}
+
+		return EndPoint::LIVE_URL;
 	}
 
 }
