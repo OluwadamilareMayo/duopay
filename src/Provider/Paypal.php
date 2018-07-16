@@ -74,4 +74,15 @@ class Paypal implements DuopayProviderContract
 		return $this->getOption($key);
 	}
 
+	/**
+	* Returns an array of payment fields.
+	*
+	* @access 	public
+	* @return 	Array
+	*/
+	public function getPaymentFields()
+	{
+		return $this->getOption('payment_fields');
+	}
+
 }
