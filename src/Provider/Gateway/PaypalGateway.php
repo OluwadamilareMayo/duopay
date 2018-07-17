@@ -29,6 +29,12 @@ class PayPalGateway implements DuopayProviderGatewayContract
 	protected 	$total;
 
 	/**
+	* @var 		$subTotal
+	* @access 	protected
+	*/
+	protected 	$subTotal;
+
+	/**
 	* @var 		$currency
 	* @access 	protected
 	*/
@@ -115,7 +121,7 @@ class PayPalGateway implements DuopayProviderGatewayContract
 	}
 
 	/**
-	* Sets the total amount.
+	* Sets the total amount which includes shipping and tax if applicable.
 	*
 	* @param 	$amount Integer
 	* @access 	public
@@ -124,6 +130,18 @@ class PayPalGateway implements DuopayProviderGatewayContract
 	public function setTotal(int $amount)
 	{
 		$this->total = $amount;
+	}
+
+	/**
+	* Sets the total amount of items without shipping and tax if applicable.
+	*
+	* @param 	$amount Integer
+	* @access 	public
+	* @return 	Void
+	*/
+	public function setSubTotal(int $amount)
+	{
+		$this->subTotal = $amount;
 	}
 
 	/**
