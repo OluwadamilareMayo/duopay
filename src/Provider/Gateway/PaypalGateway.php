@@ -35,6 +35,18 @@ class PayPalGateway implements DuopayProviderGatewayContract
 	protected 	$subTotal;
 
 	/**
+	* @var 		$shippingCost
+	* @access 	protected
+	*/
+	protected 	$shippingCost;
+
+	/**
+	* @var 		$taxCost
+	* @access 	protected
+	*/
+	protected 	$taxCost;
+
+	/**
 	* @var 		$currency
 	* @access 	protected
 	*/
@@ -47,10 +59,10 @@ class PayPalGateway implements DuopayProviderGatewayContract
 	protected 	$provider;
 
 	/**
-	* @var 		$redirectUrl
+	* @var 		$returnUrl
 	* @access 	protected
 	*/
-	protected 	$redirectUrl;
+	protected 	$returnUrl;
 
 	/**
 	* @var 		$cancelUrl
@@ -70,6 +82,15 @@ class PayPalGateway implements DuopayProviderGatewayContract
 	public function __construct(DuopayProviderContract $provider)
 	{
 		$this->provider = $provider;
+		$this->total = 0;
+		$this->subTotal = 0;
+		$this->taxCost = 0;
+		$this->shippingCost = 0;
+		$this->currency = $provider->getOption('default_currency');
+		$this->description = '';
+		$this->invoiceNumber = 'INV_' . uniqid();
+		$this->returnUrl = $provider->getOption('return_url');
+		$this->cancelUrl = $provider->getOption('cancel_url');
 	}
 
 	/**
@@ -97,15 +118,15 @@ class PayPalGateway implements DuopayProviderGatewayContract
 	}
 
 	/**
-	* Sets the redirectUrl.
+	* Sets the returnUrl.
 	*
-	* @param 	$redirectUrl String
+	* @param 	$returnUrl String
 	* @access 	public
 	* @return 	Void
 	*/
-	public function setRedirectUrl(String $redirectUrl)
+	public function setReturnUrl(String $returnUrl)
 	{
-		$this->redirectUrl = $redirectUrl;
+		$this->returnUrl = $returnUrl;
 	}
 
 	/**
@@ -133,7 +154,7 @@ class PayPalGateway implements DuopayProviderGatewayContract
 	}
 
 	/**
-	* Sets the total amount of items without shipping and tax if applicable.
+	* Sets the total amount of items without shipping and tax costs.
 	*
 	* @param 	$amount Integer
 	* @access 	public
@@ -142,6 +163,30 @@ class PayPalGateway implements DuopayProviderGatewayContract
 	public function setSubTotal(int $amount)
 	{
 		$this->subTotal = $amount;
+	}
+
+	/**
+	* Sets the transaction description.
+	*
+	* @param 	$description String
+	* @access 	public
+	* @return 	Void
+	*/
+	public function setDescription(String $description)
+	{
+		$this->description = $description;
+	}
+
+	/**
+	* Sets the transaction's invoice number.
+	*
+	* @param 	$invoiceNumber Mixed
+	* @access 	public
+	* @return 	Void
+	*/
+	public function setInvoiceNumber($invoiceNumber)
+	{
+		$this->invoiceNumber = $invoiceNumber;
 	}
 
 	/**
@@ -208,6 +253,21 @@ class PayPalGateway implements DuopayProviderGatewayContract
 		$request->setHeader('Content-Type', 'application/json');
 
 		return $request;
+	}
+
+	/**
+	* Checks if auto redirect to payment page is true or false.
+	*
+	* @access 	protected
+	* @return 	Boolean
+	*/
+	protected function canRedirectToPaymentPage() : Bool
+	{
+		if ($this->provider->getOption('auto_redirect_to_payment_page') == true) {
+			return true;
+		}
+
+		return false;
 	}
 
 }
