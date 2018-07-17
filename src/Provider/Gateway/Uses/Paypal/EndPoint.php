@@ -14,5 +14,6 @@ abstract class EndPoint
 	const GET_TOKEN 		= '{url}v1/oauth2/token';
 	const GET_ACTIVITIES 	= '{url}v1/activities/activities/';
 	const GET_IDENTITY 		= '{url}v1/oauth2/token/userinfo?schema=openid';
+	const MAKE_PAYMENT 		= '{url}v1/payments/payment';
 
 }

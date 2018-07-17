@@ -1,30 +1,50 @@
 <?php
 /**
 * @author 	Peter Taiwo
-* @package 	Duopay\Provider\Gateway\PaypalGateway
+* @package 	Duopay\Provider\Gateway\PayPalGateway
 */
 
 namespace Duopay\Provider\Gateway;
 
-use PayPal\Api\Payer;
-use GuzzleHttp\Client;
 use Kit\Http\Request\RequestManager;
 use Duopay\Contract\DuopayProviderContract;
-use Duopay\Provider\Gateway\Uses\Paypal\EndPoint;
-use Duopay\Provider\Gateway\Uses\Paypal\Requests;
+use Duopay\Provider\Gateway\Uses\PayPal\EndPoint;
+use Duopay\Provider\Gateway\Uses\PayPal\Requests;
 use Duopay\Contract\DuopayProviderGatewayContract;
+use Duopay\Provider\Gateway\Uses\PayPal\Resource\Payment;
+use Duopay\Provider\Gateway\Uses\PayPal\Resource\Activity;
+use Duopay\Provider\Gateway\Uses\PayPal\Resource\Identity;
+use Duopay\Provider\Gateway\Uses\PayPal\Resource\AccessToken;
 use Duopay\Provider\Gateway\Contract\DuopayGatewayMethodsContract;
 
-class PaypalGateway implements DuopayProviderGatewayContract
+class PayPalGateway implements DuopayProviderGatewayContract
 {
 
-	use Requests;
+	use Payment, Identity, AccessToken, Activity;
 	
 	/**
-	* @var 		$amount
+	* @var 		$total
 	* @access 	protected
 	*/
-	protected 	$amount;
+	protected 	$total;
+
+	/**
+	* @var 		$subTotal
+	* @access 	protected
+	*/
+	protected 	$subTotal;
+
+	/**
+	* @var 		$shippingCost
+	* @access 	protected
+	*/
+	protected 	$shippingCost;
+
+	/**
+	* @var 		$taxCost
+	* @access 	protected
+	*/
+	protected 	$taxCost;
 
 	/**
 	* @var 		$currency
@@ -39,10 +59,10 @@ class PaypalGateway implements DuopayProviderGatewayContract
 	protected 	$provider;
 
 	/**
-	* @var 		$redirectUrl
+	* @var 		$returnUrl
 	* @access 	protected
 	*/
-	protected 	$redirectUrl;
+	protected 	$returnUrl;
 
 	/**
 	* @var 		$cancelUrl
@@ -62,6 +82,15 @@ class PaypalGateway implements DuopayProviderGatewayContract
 	public function __construct(DuopayProviderContract $provider)
 	{
 		$this->provider = $provider;
+		$this->total = 0;
+		$this->subTotal = 0;
+		$this->taxCost = 0;
+		$this->shippingCost = 0;
+		$this->currency = $provider->getOption('default_currency');
+		$this->description = '';
+		$this->invoiceNumber = 'INV_' . uniqid();
+		$this->returnUrl = $provider->getOption('return_url');
+		$this->cancelUrl = $provider->getOption('cancel_url');
 	}
 
 	/**
@@ -77,18 +106,6 @@ class PaypalGateway implements DuopayProviderGatewayContract
 	}
 
 	/**
-	* Sets the payment amount.
-	*
-	* @param 	$amount Integer
-	* @access 	public
-	* @return 	Void
-	*/
-	public function setAmount($amount)
-	{
-		$this->amount = $amount;
-	}
-
-	/**
 	* Sets the payment currency.
 	*
 	* @param 	$currency String
@@ -101,15 +118,15 @@ class PaypalGateway implements DuopayProviderGatewayContract
 	}
 
 	/**
-	* Sets the redirectUrl.
+	* Sets the returnUrl.
 	*
-	* @param 	$redirectUrl String
+	* @param 	$returnUrl String
 	* @access 	public
 	* @return 	Void
 	*/
-	public function setRedirectUrl(String $redirectUrl)
+	public function setReturnUrl(String $returnUrl)
 	{
-		$this->redirectUrl = $redirectUrl;
+		$this->returnUrl = $returnUrl;
 	}
 
 	/**
@@ -125,6 +142,54 @@ class PaypalGateway implements DuopayProviderGatewayContract
 	}
 
 	/**
+	* Sets the total amount which includes shipping and tax if applicable.
+	*
+	* @param 	$amount Integer
+	* @access 	public
+	* @return 	Void
+	*/
+	public function setTotal(int $amount)
+	{
+		$this->total = $amount;
+	}
+
+	/**
+	* Sets the total amount of items without shipping and tax costs.
+	*
+	* @param 	$amount Integer
+	* @access 	public
+	* @return 	Void
+	*/
+	public function setSubTotal(int $amount)
+	{
+		$this->subTotal = $amount;
+	}
+
+	/**
+	* Sets the transaction description.
+	*
+	* @param 	$description String
+	* @access 	public
+	* @return 	Void
+	*/
+	public function setDescription(String $description)
+	{
+		$this->description = $description;
+	}
+
+	/**
+	* Sets the transaction's invoice number.
+	*
+	* @param 	$invoiceNumber Mixed
+	* @access 	public
+	* @return 	Void
+	*/
+	public function setInvoiceNumber($invoiceNumber)
+	{
+		$this->invoiceNumber = $invoiceNumber;
+	}
+
+	/**
 	* Returns an array of queued items.
 	*
 	* @access 	public
@@ -133,6 +198,17 @@ class PaypalGateway implements DuopayProviderGatewayContract
 	public function getQueuedItems() : Array
 	{
 		return $this->items;
+	}
+
+	/**
+	* Returns maximum purchaseable items.
+	*
+	* @return 	Integer
+	* @access 	public
+	*/
+	public function getMaxPurchaseableItems() : int
+	{
+		return $this->provider->getOption('max_purchaseable_items');
 	}
 
 	/**
@@ -153,6 +229,17 @@ class PaypalGateway implements DuopayProviderGatewayContract
 	}
 
 	/**
+	* Returns an array of payment fields.
+	*
+	* @access 	public
+	* @return 	Array
+	*/
+	public function getPaymentFields()
+	{
+		return $this->provider->getOption('payment_fields');
+	}
+
+	/**
 	* Resolves request end point and returns a client object.
 	*
 	* @param 	$with String
@@ -166,6 +253,21 @@ class PaypalGateway implements DuopayProviderGatewayContract
 		$request->setHeader('Content-Type', 'application/json');
 
 		return $request;
+	}
+
+	/**
+	* Checks if auto redirect to payment page is true or false.
+	*
+	* @access 	protected
+	* @return 	Boolean
+	*/
+	protected function canRedirectToPaymentPage() : Bool
+	{
+		if ($this->provider->getOption('auto_redirect_to_payment_page') == true) {
+			return true;
+		}
+
+		return false;
 	}
 
 }
