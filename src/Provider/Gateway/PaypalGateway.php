@@ -51,11 +51,29 @@ class PaypalGateway implements DuopayProviderGatewayContract
 	protected 	$cancelUrl;
 
 	/**
+	* @var 		$items
+	* @access 	protected
+	*/
+	protected 	$items = [];
+
+	/**
 	* {@inheritDoc}
 	*/
 	public function __construct(DuopayProviderContract $provider)
 	{
 		$this->provider = $provider;
+	}
+
+	/**
+	* Adds an item to item list.
+	*
+	* @param 	$item Array
+	* @access 	public
+	* @return 	Void
+	*/
+	public function enqueueItem(Array $item = [])
+	{
+		$this->items[] = $item;
 	}
 
 	/**
@@ -104,6 +122,17 @@ class PaypalGateway implements DuopayProviderGatewayContract
 	public function setcancelUrl(String $cancelUrl)
 	{
 		$this->cancelUrl = $cancelUrl;
+	}
+
+	/**
+	* Returns an array of queued items.
+	*
+	* @access 	public
+	* @return 	Array
+	*/
+	public function getQueuedItems() : Array
+	{
+		return $this->items;
 	}
 
 	/**
