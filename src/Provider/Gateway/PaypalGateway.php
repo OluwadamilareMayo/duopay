@@ -1,33 +1,32 @@
 <?php
 /**
 * @author 	Peter Taiwo
-* @package 	Duopay\Provider\Gateway\PaypalGateway
+* @package 	Duopay\Provider\Gateway\PayPalGateway
 */
 
 namespace Duopay\Provider\Gateway;
 
-use PayPal\Api\Payer;
 use Kit\Http\Request\RequestManager;
 use Duopay\Contract\DuopayProviderContract;
-use Duopay\Provider\Gateway\Uses\Paypal\EndPoint;
-use Duopay\Provider\Gateway\Uses\Paypal\Requests;
+use Duopay\Provider\Gateway\Uses\PayPal\EndPoint;
+use Duopay\Provider\Gateway\Uses\PayPal\Requests;
 use Duopay\Contract\DuopayProviderGatewayContract;
-use Duopay\Provider\Gateway\Uses\Paypal\Resource\Payment;
-use Duopay\Provider\Gateway\Uses\Paypal\Resource\Activity;
-use Duopay\Provider\Gateway\Uses\Paypal\Resource\Identity;
-use Duopay\Provider\Gateway\Uses\Paypal\Resource\AccessToken;
+use Duopay\Provider\Gateway\Uses\PayPal\Resource\Payment;
+use Duopay\Provider\Gateway\Uses\PayPal\Resource\Activity;
+use Duopay\Provider\Gateway\Uses\PayPal\Resource\Identity;
+use Duopay\Provider\Gateway\Uses\PayPal\Resource\AccessToken;
 use Duopay\Provider\Gateway\Contract\DuopayGatewayMethodsContract;
 
-class PaypalGateway implements DuopayProviderGatewayContract
+class PayPalGateway implements DuopayProviderGatewayContract
 {
 
 	use Payment, Identity, AccessToken, Activity;
 	
 	/**
-	* @var 		$amount
+	* @var 		$total
 	* @access 	protected
 	*/
-	protected 	$amount;
+	protected 	$total;
 
 	/**
 	* @var 		$currency
@@ -80,18 +79,6 @@ class PaypalGateway implements DuopayProviderGatewayContract
 	}
 
 	/**
-	* Sets the payment amount.
-	*
-	* @param 	$amount Integer
-	* @access 	public
-	* @return 	Void
-	*/
-	public function setAmount($amount)
-	{
-		$this->amount = $amount;
-	}
-
-	/**
 	* Sets the payment currency.
 	*
 	* @param 	$currency String
@@ -128,6 +115,18 @@ class PaypalGateway implements DuopayProviderGatewayContract
 	}
 
 	/**
+	* Sets the total amount.
+	*
+	* @param 	$amount Integer
+	* @access 	public
+	* @return 	Void
+	*/
+	public function setTotal(int $amount)
+	{
+		$this->total = $amount;
+	}
+
+	/**
 	* Returns an array of queued items.
 	*
 	* @access 	public
@@ -136,6 +135,17 @@ class PaypalGateway implements DuopayProviderGatewayContract
 	public function getQueuedItems() : Array
 	{
 		return $this->items;
+	}
+
+	/**
+	* Returns maximum purchaseable items.
+	*
+	* @return 	Integer
+	* @access 	public
+	*/
+	public function getMaxPurchaseableItems() : int
+	{
+		return $this->provider->getOption('max_purchaseable_items');
 	}
 
 	/**
@@ -153,6 +163,17 @@ class PaypalGateway implements DuopayProviderGatewayContract
 		}
 
 		return EndPoint::LIVE_URL . $with;
+	}
+
+	/**
+	* Returns an array of payment fields.
+	*
+	* @access 	public
+	* @return 	Array
+	*/
+	public function getPaymentFields()
+	{
+		return $this->provider->getOption('payment_fields');
 	}
 
 	/**

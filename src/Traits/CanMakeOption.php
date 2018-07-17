@@ -1,14 +1,14 @@
 <?php
 /**
 * @author 	Peter Taiwo
-* @package 	Duopay\Traits\CanGetOption
+* @package 	Duopay\Traits\CanMakeOption
 */
 
 namespace Duopay\Traits;
 
 use Duopay\Exceptions\ConfigNotFoundException;
 
-trait CanGetOption
+trait CanMakeOption
 {
 	/**
 	* Returns a configuration option.
@@ -29,5 +29,18 @@ trait CanGetOption
 				$key
 			)
 		);
+	}
+
+	/**
+	* Sets a configuration option.
+	*
+	* @param 	$key String
+	* @param 	$value Mixed
+	* @access 	public
+	* @return 	Void
+	*/
+	public function setOption(String $key, $value = null)
+	{
+		$this->config[$key] = $value;
 	}
 }

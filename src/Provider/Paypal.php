@@ -1,22 +1,22 @@
 <?php
 /**
 * @author 	Peter Taiwo
-* @package 	Duopay\Provider\Paypal
+* @package 	Duopay\Provider\PayPal
 */
 
 namespace Duopay\Provider;
 
 use Duopay\Duopay;
 use PayPal\Rest\ApiContext;
-use Duopay\Traits\CanGetOption;
+use Duopay\Traits\CanMakeOption;
 use PayPal\Auth\OAuthTokenCredential;
-use Duopay\Provider\Gateway\PaypalGateway;
+use Duopay\Provider\Gateway\PayPalGateway;
 use Duopay\Contract\DuopayProviderContract;
 
-class Paypal implements DuopayProviderContract
+class PayPal implements DuopayProviderContract
 {
 
-	use CanGetOption;
+	use CanMakeOption;
 
 	/**
 	* @var 		$context
@@ -48,7 +48,7 @@ class Paypal implements DuopayProviderContract
 			'mode' => ($settings['test_mode'] == true) ? 'sandbox' : 'live'
 		]);
 
-		return new PaypalGateway($this);
+		return new PayPalGateway($this);
 	}
 
 	/**
@@ -72,17 +72,6 @@ class Paypal implements DuopayProviderContract
 	public function getConfigOption(String $key)
 	{
 		return $this->getOption($key);
-	}
-
-	/**
-	* Returns an array of payment fields.
-	*
-	* @access 	public
-	* @return 	Array
-	*/
-	public function getPaymentFields()
-	{
-		return $this->getOption('payment_fields');
 	}
 
 }

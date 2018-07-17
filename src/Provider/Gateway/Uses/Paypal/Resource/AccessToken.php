@@ -1,13 +1,13 @@
 <?php
 /**
 * @author 	Peter Taiwo
-* @package 	Duopay\Provider\Gateway\Uses\Paypal\Resource\AccessToken
+* @package 	Duopay\Provider\Gateway\Uses\PayPal\Resource\AccessToken
 */
 
-namespace Duopay\Provider\Gateway\Uses\Paypal\Resource;
+namespace Duopay\Provider\Gateway\Uses\PayPal\Resource;
 
 use Duopay\Http\Response;
-use Duopay\Provider\Gateway\Uses\Paypal\EndPoint;
+use Duopay\Provider\Gateway\Uses\PayPal\EndPoint;
 
 trait AccessToken
 {

@@ -7,7 +7,7 @@
 namespace Duopay;
 
 use ReflectionClass;
-use Duopay\Traits\CanGetOption;
+use Duopay\Traits\CanMakeOption;
 use Duopay\Exceptions\InvalidApiException;
 use Duopay\Contract\DuopayProviderContract;
 use Duopay\Exceptions\ConfigNotFoundException;
@@ -17,7 +17,7 @@ use Duopay\Contract\DuopayProviderGatewayContract;
 class Duopay
 {
 
-	use CanGetOption;
+	use CanMakeOption;
 
 	/**
 	* @var 		$gateway
@@ -85,19 +85,6 @@ class Duopay
 		}
 
 		return $providerObject->provides($this);
-	}
-
-	/**
-	* Sets a configuration option.
-	*
-	* @param 	$key String
-	* @param 	$value Mixed
-	* @access 	public
-	* @return 	Void
-	*/
-	public function setOption(String $key, $value = null)
-	{
-		$this->config[$key] = $value;
 	}
 
 	/**
