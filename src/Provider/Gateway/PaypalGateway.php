@@ -7,18 +7,21 @@
 namespace Duopay\Provider\Gateway;
 
 use PayPal\Api\Payer;
-use GuzzleHttp\Client;
 use Kit\Http\Request\RequestManager;
 use Duopay\Contract\DuopayProviderContract;
 use Duopay\Provider\Gateway\Uses\Paypal\EndPoint;
 use Duopay\Provider\Gateway\Uses\Paypal\Requests;
 use Duopay\Contract\DuopayProviderGatewayContract;
+use Duopay\Provider\Gateway\Uses\Paypal\Resource\Payment;
+use Duopay\Provider\Gateway\Uses\Paypal\Resource\Activity;
+use Duopay\Provider\Gateway\Uses\Paypal\Resource\Identity;
+use Duopay\Provider\Gateway\Uses\Paypal\Resource\AccessToken;
 use Duopay\Provider\Gateway\Contract\DuopayGatewayMethodsContract;
 
 class PaypalGateway implements DuopayProviderGatewayContract
 {
 
-	use Requests;
+	use Payment, Identity, AccessToken, Activity;
 	
 	/**
 	* @var 		$amount
