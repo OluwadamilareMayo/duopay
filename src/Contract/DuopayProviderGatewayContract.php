@@ -18,4 +18,22 @@ interface DuopayProviderGatewayContract
 	*/
 	public function __construct(DuopayProviderContract $provider);
 
+	/**
+	*  Creates a new sale payment.
+	*
+	* @param 	$accessToken String
+	* @access 	public
+	* @return 	Mixed
+	*/
+	public function createPayment(String $accessToken = '');
+
+	/**
+	*  Creates a new order.
+	*
+	* @param 	$accessToken String
+	* @access 	public
+	* @return 	Mixed
+	*/
+	public function createOrder(String $accessToken = '');
+
 }

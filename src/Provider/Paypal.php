@@ -44,7 +44,9 @@ class PayPal implements DuopayProviderContract
 
 		$this->context = new ApiContext($tokenCredential);
 		$this->context->setConfig([
-			'log' => $settings['log_file'],
+			'log.LogEnabled' => $settings['enable_logging'],
+			'log.FileName' => $settings['log_file'],
+			'log.LogLevel' => 'debug',
 			'mode' => ($settings['test_mode'] == true) ? 'sandbox' : 'live'
 		]);
 

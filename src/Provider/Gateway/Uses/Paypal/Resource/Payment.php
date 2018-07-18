@@ -16,22 +16,39 @@ use PayPal\Api\Transaction;
 use PayPal\Api\RedirectUrls;
 use Kit\Http\Response as HttpResponse;
 use PayPal\Api\Payment as PayPalPayment;
-use Duopay\Provider\Gateway\Uses\PayPal\EndPoint;
 use Duopay\Exceptions\InvalidItemFieldException;
 use Duopay\Exceptions\InvalidItemLengthException;
+use Duopay\Provider\Gateway\Uses\PayPal\EndPoint;
 
 trait Payment
 {
 
 	/**
-	* Creates an authorized payment or order.
+	* {@inheritDoc}
+	*/
+	public function createPayment(String $accessToken = '')
+	{
+		return $this->initializePayment($accessToken);
+	}
+
+	/**
+	* {@inheritDoc}
+	*/
+	public function createOrder(String $accessToken = '')
+	{
+		return $this->initializePayment($accessToken, 'order');
+	}
+
+	/**
+	* Creates and builds an authorized payment, either a sale or order.
 	*
 	* @param 	$accessToken String
-	* @access 	public
-	* @return 	Object Duopay\Http\Response
+	* @param 	$intent String
+	* @access 	protected
+	* @return 	Mixed
 	* @link 	https://developer.paypal.com/docs/api/payments/v1/#payment
 	*/
-	public function makePayment(String $accessToken)
+	protected function initializePayment(String $accessToken, String $intent = 'sale')
 	{
 		$request = $this->makeRequestEndPointWithClient(EndPoint::MAKE_PAYMENT);
 		$queuedItems = $this->getQueuedItems();
