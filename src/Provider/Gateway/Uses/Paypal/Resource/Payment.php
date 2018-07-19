@@ -19,6 +19,7 @@ use PayPal\Api\Payment as PayPalPayment;
 use Duopay\Exceptions\InvalidItemFieldException;
 use Duopay\Exceptions\InvalidItemLengthException;
 use Duopay\Provider\Gateway\Uses\PayPal\EndPoint;
+use Duopay\Provider\Gateway\Uses\PayPal\Resource\Uses\PaymentResponseBuilder;
 
 trait Payment
 {
@@ -37,6 +38,14 @@ trait Payment
 	public function createOrder(String $accessToken = '')
 	{
 		return $this->initializePayment($accessToken, 'order');
+	}
+
+	/**
+	* {@inheritDoc}
+	*/
+	public function executeApprovedPayment(String $accessToken = '', String $payedId = '')
+	{
+
 	}
 
 	/**
@@ -118,17 +127,7 @@ trait Payment
 		$payment->setTransactions([$transaction]);
 
 		$request = $payment->create($this->provider->getContext());
-
-		if (!$this->canRedirectToPaymentPage()) {
-			return [
-				'approval_link' => $request->getApprovalLink()
-			];
-		}
-
-		$response = new HttpResponse();
-		return $response->redirect(
-			$request->getApprovalLink()
-		);
+		return new PaymentResponseBuilder($request);
 	}
 
 }
