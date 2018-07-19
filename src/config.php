@@ -29,7 +29,7 @@ return [
 		| --------------------------------------------
 		*/
 
-		'log_file' => '/logs/paypal.log',
+		'log_file' => __DIR__ . '/logs/paypal.log',
 
 		/*
 		| ---------------------------------------------------------
@@ -93,7 +93,15 @@ return [
 		| ---------------------------------------------------
 		*/
 
-		'auto_redirect_to_payment_page' => true
+		'auto_redirect_to_payment_page' => false,
+
+		/*
+		| -----------------------------------------------
+		| If set to true, paypal logging will be enabled.
+		| -----------------------------------------------
+		*/
+
+		'enable_logging' => false
 	],
 
 	'stripe' => [
